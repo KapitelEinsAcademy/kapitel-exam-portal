@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kapitel Eins Sprachakademie</title>
+    <title>Kapitel Eins Prüftest</title>
     <style>
         :root {
             --primary-color: #1e3a8a;
@@ -22,11 +22,11 @@
             min-height: 100vh;
             position: relative;
             
-            /* خلفية الصفحة بالكامل باللون البرتقالي الراقي والمتدرج */
+            /* خلفية الصفحة بالكامل أصبحت باللون البرتقالي الراقي والمتدرج */
             background: linear-gradient(135deg, #f97316 0%, #ea580c 50%, #c2410c 100%);
         }
         
-        /* علامة مائية كبيرة باسم الأكاديمية تغطي خلفية الصفحة بالكامل */
+        /* علامة مائية كبيرة باسم الأكاديمية تغطي خلفية الصفحة بالكامل باللون البرتقالي الفاتح */
         body::before {
             content: "Kapitel Eins Sprachakademie";
             position: fixed;
@@ -35,7 +35,7 @@
             transform: translate(-50%, -50%) rotate(-25deg);
             font-size: 8vw;
             font-weight: 900;
-            color: rgba(255, 255, 255, 0.12); /* لون أبيض شفاف ليبدو كعلامة مائية فاخرة */
+            color: rgba(255, 255, 255, 0.12); /* لون أبيض شفاف جداً ليبدو كعلامة مائية فاخرة على الخلفية البرتقالية */
             white-space: nowrap;
             z-index: 0;
             pointer-events: none;
@@ -44,6 +44,7 @@
         .container {
             width: 100%;
             max-width: 750px;
+            /* الاستمارة بيضاء ونقية تماماً لتكون مريحة جداً في القراءة وكتابة البيانات */
             background: #ffffff;
             padding: 40px;
             border-radius: 20px;
@@ -57,20 +58,412 @@
             border-bottom: 2px solid #e2e8f0;
             padding-bottom: 20px;
         }
-        .header h1 {
-            color: #ea580c;
-            font-size: 28px;
-            margin: 0 0 10px 0;
+        .logo-text {
+            font-size: 26px;
+            font-weight: bold;
+            color: #e06d53;
+            margin-bottom: 5px;
+        }
+        h2 {
+            color: var(--primary-color);
+            margin: 0 0 5px 0;
+            font-size: 24px;
+        }
+        p.subtitle {
+            color: #64748b;
+            font-size: 14px;
+            margin: 0;
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+        label {
+            font-weight: 600;
+            color: #334155;
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        input[type="text"], input[type="tel"], input[type="date"], textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 14px;
+            transition: all 0.3s;
+            background: #f8fafc;
+        }
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #ea580c;
+            box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.15);
+        }
+        textarea {
+            resize: vertical;
+            height: 90px;
+        }
+        .recording-section {
+            background: #fff7ed;
+            border: 1px solid #ffedd5;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        button {
+            padding: 12px 24px;
+            font-size: 15px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-start { background-color: var(--accent-color); color: white; }
+        .btn-start:hover { background-color: #059669; }
+        .btn-stop { background-color: var(--danger-color); color: white; }
+        .btn-stop:hover { background-color: #dc2626; }
+        .btn-submit { 
+            background-color: #ea580c; 
+            color: white; 
+            width: 100%; 
+            justify-content: center;
+            padding: 14px;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        .btn-submit:hover { background-color: #c2410c; }
+        button:disabled { background-color: #cbd5e1; cursor: not-allowed; }
+        #audioPreview {
+            width: 100%;
+            margin-top: 10px;
+            border-radius: 8px;
+        }
+        #status {
+            font-weight: 600;
+            margin-top: 15px;
+            text-align: center;
+            font-size: 14px;
+            color: #475569;
+        }
+        .criteria-container {
+            background: #fff7ed;
+            border: 1px solid #ffedd5;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        .criteria-container h3 {
+            margin-top: 0;
+            font-size: 16px;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        .criteria-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+        .criteria-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #ffffff;
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+        .criteria-item label {
+            margin-bottom: 0;
+            flex-grow: 1;
+            font-size: 13px;
+        }
+        .criteria-item select {
+            width: 100px;
+        }
+        .total-score {
+            background: #ffedd5;
+            border: 1px solid #fed7aa;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>Kapitel Eins Sprachakademie</h1>
-            <p>Prüfungsanmeldung & Registrierung</p>
-        </div>
-        <p style="text-align: center; color: #555;">مرحباً بك يا دكتور! البوابة تعمل الآن بكامل الكفاءة والهوية البصرية.</p>
+
+<div class="container">
+    <div class="header">
+        <div class="logo-text">Kapitel I - Sprachakademie</div>
+        <h2>Mündlicher Prüftest</h2>
+        <p class="subtitle">Offizielles Bewertungsformular</p>
     </div>
+
+    <!-- معلومات الطالب والامتحان -->
+    <div class="form-grid">
+        <div class="form-group">
+            <label>Name des Schülers (اسم الطالب):</label>
+            <input type="text" id="studentName" placeholder="Vollständigen Namen eingeben">
+        </div>
+        <div class="form-group">
+            <label>Telefonnummer (رقم التليفون):</label>
+            <input type="tel" id="studentPhone" placeholder="Telefonnummer eingeben">
+        </div>
+        <div class="form-group">
+            <label>Bewerter/in (المُقيم / المحاضر):</label>
+            <input type="text" id="examinerName" placeholder="Name des Prüfers">
+        </div>
+        <div class="form-group">
+            <label>Prüfungsdatum (تاريخ الامتحان):</label>
+            <input type="date" id="examDate">
+        </div>
+        <div class="form-group full-width">
+            <label>Gewünschtes Niveau (المستوى المطلوب):</label>
+            <select id="targetLevel">
+                <option value="A1">A1</option>
+                <option value="A2">A2</option>
+                <option value="B1">B1</option>
+                <option value="B2">B2</option>
+                <option value="C1">C1</option>
+                <option value="C2">C2</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- التسجيل الصوتي -->
+    <div class="recording-section">
+        <label style="margin-bottom: 12px; text-align: center;">Mündliche Aufnahme (التسجيل الصوتي):</label>
+        <div class="controls">
+            <button id="startBtn" class="btn-start" onclick="startRecording()">🎤 Aufnahme starten</button>
+            <button id="stopBtn" class="btn-stop" onclick="stopRecording()" disabled>⏹️ Stoppen</button>
+        </div>
+        <audio id="audioPreview" controls style="display:none;"></audio>
+    </div>
+
+    <!-- المعايير الخمسة مع الترجمة -->
+    <div class="criteria-container">
+        <h3>Bewertungskriterien (معايير التقييم من 1 إلى 5)</h3>
+        <div class="criteria-grid">
+            <div class="criteria-item">
+                <label>1. Erfüllung (إنجاز المهمة):</label>
+                <select id="score1" onchange="calculateTotal()">
+                    <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5" selected>5</option>
+                </select>
+            </div>
+            <div class="criteria-item">
+                <label>2. Ausdrucksweise (التعبير اللغوي):</label>
+                <select id="score2" onchange="calculateTotal()">
+                    <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5" selected>5</option>
+                </select>
+            </div>
+            <div class="criteria-item">
+                <label>3. Aussprache (النطق):</label>
+                <select id="score3" onchange="calculateTotal()">
+                    <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5" selected>5</option>
+                </select>
+            </div>
+            <div class="criteria-item">
+                <label>4. Flüssigkeit (الطلاقة):</label>
+                <select id="score4" onchange="calculateTotal()">
+                    <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5" selected>5</option>
+                </select>
+            </div>
+            <div class="criteria-item">
+                <label>5. Korrektheit (الصحة النحوية):</label>
+                <select id="score5" onchange="calculateTotal()">
+                    <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5" selected>5</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="total-score">
+            <span>Gesamtpunktzahl / مجموع الدرجات (من 25):</span>
+            <span id="totalSum">25 / 25</span>
+        </div>
+    </div>
+
+    <!-- النتائج وإعادة الامتحان مع الترجمة -->
+    <div class="results-grid">
+        <div class="form-group" style="margin-bottom:0;">
+            <label>Prüfungsergebnis (النتيجة - ناجح / غير ناجح):</label>
+            <select id="examResult" style="font-weight: bold;">
+                <option value="Bestanden" style="color: #10b981;">✅ Bestanden (ناجح)</option>
+                <option value="Nicht Bestanden" style="color: #ef4444;">❌ Nicht Bestanden (غير ناجح)</option>
+            </select>
+        </div>
+        <div class="form-group" style="margin-bottom:0;">
+            <label>Wiederholung der Prüfung (إعادة الامتحان):</label>
+            <select id="examRepeat" style="font-weight: bold;">
+                <option value="Keine Wiederholung">Nein - Keine Wiederholung (لا يحتاج إعادة)</option>
+                <option value="Wiederholung erforderlich">Ja - Wiederholung erforderlich (يحتاج إعادة)</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- الفيدباك -->
+    <div class="form-group" style="margin-top: 20px;">
+        <label>Feedback / Notizen (الفيدباك والملاحظات):</label>
+        <textarea id="feedback" placeholder="Feedback oder Bemerkungen hier eingeben..."></textarea>
+    </div>
+
+    <!-- زر الحفظ -->
+    <button id="submitBtn" class="btn-submit" onclick="uploadData()" disabled>☁️ Speichern und an Drive senden (حفظ وإرسال)</button>
+
+    <div id="status"></div>
+</div>
+
+<script>
+    let mediaRecorder;
+    let audioChunks = [];
+    let audioBlob;
+    let audioBase64;
+
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzz-aGZz5KYF70HUI4SxzCx379LcfCDFR5Eqv7VJAFJZs4ui13e7I_F4dRbxHLo3Qe/exec";
+
+    document.getElementById('examDate').valueAsDate = new Date();
+
+    function calculateTotal() {
+        const s1 = parseInt(document.getElementById('score1').value) || 0;
+        const s2 = parseInt(document.getElementById('score2').value) || 0;
+        const s3 = parseInt(document.getElementById('score3').value) || 0;
+        const s4 = parseInt(document.getElementById('score4').value) || 0;
+        const s5 = parseInt(document.getElementById('score5').value) || 0;
+        
+        const sum = s1 + s2 + s3 + s4 + s5;
+        document.getElementById('totalSum').innerText = sum + " / 25";
+    }
+
+    async function startRecording() {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorder = new MediaRecorder(stream);
+            audioChunks = [];
+
+            mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
+            mediaRecorder.onstop = () => {
+                audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                const audioUrl = URL.createObjectURL(audioBlob);
+                const audioPreview = document.getElementById('audioPreview');
+                audioPreview.src = audioUrl;
+                audioPreview.style.display = 'block';
+
+                let reader = new FileReader();
+                reader.readAsDataURL(audioBlob);
+                reader.onloadend = () => {
+                    audioBase64 = reader.result;
+                    document.getElementById('submitBtn').disabled = false;
+                };
+            };
+
+            mediaRecorder.start();
+            document.getElementById('startBtn').disabled = true;
+            document.getElementById('stopBtn').disabled = false;
+            document.getElementById('status').innerText = "🔴 Aufnahme läuft...";
+            document.getElementById('status').style.color = "var(--danger-color)";
+        } catch (err) {
+            alert("Bitte erlauben Sie den Zugriff auf das Mikrofon.");
+        }
+    }
+
+    function stopRecording() {
+        mediaRecorder.stop();
+        document.getElementById('startBtn').disabled = false;
+        document.getElementById('stopBtn').disabled = true;
+        document.getElementById('status').innerText = "⏸️ Aufnahme gestoppt. Sie können prüfen und speichern.";
+        document.getElementById('status').style.color = "var(--primary-color)";
+    }
+
+    async function uploadData() {
+        const studentName = document.getElementById('studentName').value;
+        const studentPhone = document.getElementById('studentPhone').value;
+        const examinerName = document.getElementById('examinerName').value || "Nicht angegeben";
+        const examDate = document.getElementById('examDate').value;
+        const targetLevel = document.getElementById('targetLevel').value;
+        
+        const s1 = document.getElementById('score1').value;
+        const s2 = document.getElementById('score2').value;
+        const s3 = document.getElementById('score3').value;
+        const s4 = document.getElementById('score4').value;
+        const s5 = document.getElementById('score5').value;
+        const totalSubText = document.getElementById('totalSum').innerText;
+        const examResult = document.getElementById('examResult').value;
+        const examRepeat = document.getElementById('examRepeat').value;
+        const feedback = document.getElementById('feedback').value;
+
+        if (!studentName || !studentPhone) {
+            alert("Bitte geben Sie Name und Telefonnummer ein.");
+            return;
+        }
+
+        document.getElementById('status').innerText = "⏳ Wird an Google Drive gesendet...";
+        document.getElementById('submitBtn').disabled = true;
+
+        const fullFeedback = `Datum: ${examDate} | Prüfer: ${examinerName} | Ergebnis: ${examResult} | ${examRepeat} | Niveau: ${targetLevel} | Gesamt: ${totalSubText} | [Erfüllung: ${s1}, Ausdruck: ${s2}, Aussprache: ${s3}, Flüssigkeit: ${s4}, Korrektheit: ${s5}] | Feedback: ${feedback}`;
+
+        const payload = {
+            studentName: studentName + " (" + studentPhone + ")",
+            studentId: targetLevel + " - " + examResult,
+            subject: "Prüftest | " + examDate + " | Prüfer: " + examinerName,
+            feedback: fullFeedback,
+            audioData: audioBase64,
+            mimeType: 'audio/webm'
+        };
+
+        try {
+            await fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            document.getElementById('status').innerText = "✅ Erfolgreich in Google Drive gespeichert!";
+            document.getElementById('status').style.color = "var(--accent-color)";
+            
+            document.getElementById('studentName').value = '';
+            document.getElementById('studentPhone').value = '';
+            document.getElementById('examinerName').value = '';
+            document.getElementById('feedback').value = '';
+            document.getElementById('audioPreview').style.display = 'none';
+            calculateTotal();
+        } catch (error) {
+            document.getElementById('status').innerText = "❌ Fehler beim Senden. Bitte versuchen Sie es erneut.";
+            document.getElementById('status').style.color = "var(--danger-color)";
+            document.getElementById('submitBtn').disabled = false;
+        }
+    }
+</script>
+
 </body>
 </html>
