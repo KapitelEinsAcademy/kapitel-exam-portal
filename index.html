@@ -150,18 +150,18 @@
             </div>
 
             <div class="form-group">
-                <label for="statusResult">Ergebnis (Bestanden / Nicht Bestanden):</label>
+                <label for="statusResult">Ergebnis:</label>
                 <select id="statusResult">
-                    <option value="Bestanden">Bestanden (ناجح)</option>
-                    <option value="Nicht Bestanden">Nicht Bestanden (راسب)</option>
+                    <option value="Bestanden">Bestanden</option>
+                    <option value="Nicht Bestanden">Nicht Bestanden</option>
                 </select>
             </div>
 
             <div class="form-group">
                 <label for="retakeRequired">Wiederholung erforderlich?</label>
                 <select id="retakeRequired">
-                    <option value="Nein">Nein (لا يوجد إعادة)</option>
-                    <option value="Ja">Ja (يوجد إعادة)</option>
+                    <option value="Nein">Nein</option>
+                    <option value="Ja">Ja</option>
                 </select>
             </div>
 
@@ -191,6 +191,7 @@
         let timerInterval;
         let seconds = 0;
         let base64Audio = "";
+        let audioStream = null;
 
         const startBtn = document.getElementById('startBtn');
         const stopBtn = document.getElementById('stopBtn');
@@ -201,12 +202,14 @@
 
         startBtn.addEventListener('click', async () => {
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                mediaRecorder = new MediaRecorder(stream);
+                audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(audioStream);
                 audioChunks = [];
 
                 mediaRecorder.ondataavailable = event => {
-                    audioChunks.push(event.data);
+                    if (event.data.size > 0) {
+                        audioChunks.push(event.data);
+                    }
                 };
 
                 mediaRecorder.onstop = () => {
@@ -240,7 +243,9 @@
         stopBtn.addEventListener('click', () => {
             if (mediaRecorder && mediaRecorder.state !== "inactive") {
                 mediaRecorder.stop();
-                mediaRecorder.stream.getTracks().forEach(track => track.stop());
+            }
+            if (audioStream) {
+                audioStream.getTracks().forEach(track => track.stop());
             }
             clearInterval(timerInterval);
             startBtn.disabled = false;
