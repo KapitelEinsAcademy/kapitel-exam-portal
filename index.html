@@ -73,6 +73,9 @@
             font-size: 16px;
             box-sizing: border-box;
         }
+        select:invalid {
+            color: #94a3b8;
+        }
         .criteria-box {
             background: #f8fafc;
             border: 1px solid #cbd5e1;
@@ -163,7 +166,7 @@
 
             <div class="form-group">
                 <label for="idNumber">ID / Nummer:</label>
-                <input type="text" id="idNumber" placeholder="ID oder Nummer eingeben...">
+                <input type="text" id="idNumber" placeholder="ID أو الرقم التعريفي...">
             </div>
 
             <div class="form-group">
@@ -178,11 +181,14 @@
 
             <div class="form-group">
                 <label for="examLevel">Prüfungsniveau:</label>
-                <select id="examLevel">
-                    <option value="A1">Start Deutsch A1</option>
-                    <option value="A2">Zertifikat A2</option>
-                    <option value="B1">Zertifikat B1</option>
-                    <option value="B2">Zertifikat B2</option>
+                <select id="examLevel" required>
+                    <option value="" disabled selected>Niveau auswählen...</option>
+                    <option value="A1">A1</option>
+                    <option value="A2">A2</option>
+                    <option value="B1">B1</option>
+                    <option value="B2">B2</option>
+                    <option value="C1">C1</option>
+                    <option value="C2">C2</option>
                 </select>
             </div>
 
@@ -330,7 +336,7 @@
                 statusMessage.textContent = "Aufnahme läuft...";
                 statusMessage.style.color = "#ea580c";
             } catch (err) {
-                alert("Bitte erlauben Sie den Zugriff على das Mikrofon.");
+                alert("Bitte erlauben Sie den Zugriff auf das Mikrofon.");
             }
         });
 
@@ -388,7 +394,7 @@
                 timerDisplay.textContent = "00:00";
                 calculateTotal();
                 base64Audio = "";
-            } catch (error) {
+            } الجزئية catch (error) {
                 statusMessage.textContent = "Fehler beim Senden. Bitte versuchen Sie es erneut.";
                 statusMessage.style.color = "#ef4444";
             }
