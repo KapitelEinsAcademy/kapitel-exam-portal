@@ -73,6 +73,48 @@
             font-size: 16px;
             box-sizing: border-box;
         }
+        .criteria-box {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 25px;
+            margin-bottom: 25px;
+        }
+        .criteria-box h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+            font-size: 18px;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 10px;
+        }
+        .criteria-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .criteria-row label {
+            margin-bottom: 0;
+            font-weight: normal;
+            font-size: 14px;
+            flex: 2;
+        }
+        .criteria-row select {
+            flex: 1;
+            padding: 8px;
+        }
+        .total-box {
+            background: #fff7ed;
+            border: 2px solid var(--primary-color);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 15px;
+            font-weight: bold;
+            color: var(--secondary-color);
+            font-size: 18px;
+        }
         .recorder-section {
             background: #f8fafc;
             border: 2px dashed #cbd5e1;
@@ -144,8 +186,52 @@
                 </select>
             </div>
 
+            <!-- قسم معايير التقييم الشفوي -->
+            <div class="criteria-box">
+                <h3>Bewertungskriterien (1 bis 5)</h3>
+                
+                <div class="criteria-row">
+                    <label>Erfüllung (E):</label>
+                    <select id="critE" class="score-select">
+                        <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
+                    </select>
+                </div>
+
+                <div class="criteria-row">
+                    <label>Wortschatz und Redemittel (W/R):</label>
+                    <select id="critWR" class="score-select">
+                        <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
+                    </select>
+                </div>
+
+                <div class="criteria-row">
+                    <label>Aussprache (A):</label>
+                    <select id="critA" class="score-select">
+                        <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
+                    </select>
+                </div>
+
+                <div class="criteria-row">
+                    <label>Flüssigkeit (F):</label>
+                    <select id="critF" class="score-select">
+                        <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
+                    </select>
+                </div>
+
+                <div class="criteria-row">
+                    <label>Korrektheit (K):</label>
+                    <select id="critK" class="score-select">
+                        <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
+                    </select>
+                </div>
+
+                <div class="total-box">
+                    Gesamtpunkte (Total): <span id="totalScore">5</span> / 25
+                </div>
+            </div>
+
             <div class="form-group">
-                <label for="grades">Noten / Punkte:</label>
+                <label for="grades">Noten / Zusätzliche Punkte:</label>
                 <input type="text" id="grades" placeholder="Note eingeben...">
             </div>
 
@@ -186,6 +272,22 @@
     </div>
 
     <script>
+        // حساب المجموع أوتوماتيكياً عند تغيير أي درجة
+        const scoreSelects = document.querySelectorAll('.score-select');
+        const totalScoreDisplay = document.getElementById('totalScore');
+
+        function calculateTotal() {
+            let total = 0;
+            scoreSelects.forEach(select => {
+                total += parseInt(select.value) || 0;
+            });
+            totalScoreDisplay.textContent = total;
+        }
+
+        scoreSelects.forEach(select => {
+            select.addEventListener('change', calculateTotal);
+        });
+
         let mediaRecorder;
         let audioChunks = [];
         let timerInterval;
@@ -265,6 +367,12 @@
                 examDate: document.getElementById('examDate').value,
                 instructor: document.getElementById('instructor').value,
                 examLevel: document.getElementById('examLevel').value,
+                critE: document.getElementById('critE').value,
+                critWR: document.getElementById('critWR').value,
+                critA: document.getElementById('critA').value,
+                critF: document.getElementById('critF').value,
+                critK: document.getElementById('critK').value,
+                totalScore: totalScoreDisplay.textContent,
                 grades: document.getElementById('grades').value,
                 statusResult: document.getElementById('statusResult').value,
                 retakeRequired: document.getElementById('retakeRequired').value,
@@ -286,6 +394,7 @@
                 statusMessage.style.color = "#10b981";
                 examForm.reset();
                 timerDisplay.textContent = "00:00";
+                calculateTotal();
                 base64Audio = "";
             } catch (error) {
                 statusMessage.textContent = "Fehler beim Senden. Bitte versuchen Sie es erneut.";
