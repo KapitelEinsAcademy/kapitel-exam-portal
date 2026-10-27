@@ -115,27 +115,27 @@
 
         <form id="examForm">
             <div class="form-group">
-                <label for="fullName">Vollständiger Name (الاسم الكامل):</label>
-                <input type="text" id="fullName" required placeholder="أدخل اسم الطالب...">
+                <label for="fullName">Vollständiger Name:</label>
+                <input type="text" id="fullName" required placeholder="Vollständigen Namen eingeben...">
             </div>
 
             <div class="form-group">
-                <label for="idNumber">ID / Nummer (الرقم التعريفي):</label>
-                <input type="text" id="idNumber" placeholder="أدخل الرقم...">
+                <label for="idNumber">ID / Nummer:</label>
+                <input type="text" id="idNumber" placeholder="ID oder Nummer eingeben...">
             </div>
 
             <div class="form-group">
-                <label for="examDate">Exam Date (تاريخ الاختبار):</label>
+                <label for="examDate">Prüfungsdatum:</label>
                 <input type="date" id="examDate">
             </div>
 
             <div class="form-group">
-                <label for="instructor">Instructor (الإنستراكتور / المحاضر):</label>
-                <input type="text" id="instructor" placeholder="اسم المحاضر...">
+                <label for="instructor">Prüfer / Instructor:</label>
+                <input type="text" id="instructor" placeholder="Name des Prüfers...">
             </div>
 
             <div class="form-group">
-                <label for="examLevel">Exam Level (مستوى الاختبار):</label>
+                <label for="examLevel">Prüfungsniveau:</label>
                 <select id="examLevel">
                     <option value="A1">Start Deutsch A1</option>
                     <option value="A2">Zertifikat A2</option>
@@ -145,25 +145,41 @@
             </div>
 
             <div class="form-group">
-                <label for="grades">Grades (الدرجات):</label>
-                <input type="text" id="grades" placeholder="أدخل الدرجة أو التقييم...">
+                <label for="grades">Noten / Punkte:</label>
+                <input type="text" id="grades" placeholder="Note eingeben...">
             </div>
 
             <div class="form-group">
-                <label for="notes">Notes (ملاحظات):</label>
-                <textarea id="notes" rows="3" placeholder="أي ملاحظات إضافية..."></textarea>
+                <label for="statusResult">Ergebnis (Bestanden / Nicht Bestanden):</label>
+                <select id="statusResult">
+                    <option value="Bestanden">Bestanden (ناجح)</option>
+                    <option value="Nicht Bestanden">Nicht Bestanden (راسب)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="retakeRequired">Wiederholung erforderlich?</label>
+                <select id="retakeRequired">
+                    <option value="Nein">Nein (لا يوجد إعادة)</option>
+                    <option value="Ja">Ja (يوجد إعادة)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="notes">Bemerkungen:</label>
+                <textarea id="notes" rows="3" placeholder="Zusätzliche Bemerkungen..."></textarea>
             </div>
 
             <div class="recorder-section">
-                <label>تسجيل الاختبار الشفوي (Mündliche Prüfung):</label>
-                <button type="button" id="startBtn" class="btn">🎙️ بدء التسجيل</button>
-                <button type="button" id="stopBtn" class="btn btn-danger" disabled>⏹️ إيقاف التسجيل</button>
+                <label>Mündliche Prüfung (Audioaufnahme):</label>
+                <button type="button" id="startBtn" class="btn">🎙️ Aufnahme starten</button>
+                <button type="button" id="stopBtn" class="btn btn-danger" disabled>⏹️ Aufnahme stoppen</button>
                 <p id="timer" style="margin-top: 10px; font-weight: bold; color: #64748b;">00:00</p>
                 <audio id="audioElement" controls></audio>
             </div>
 
             <div style="margin-top: 30px; text-align: center;">
-                <button type="submit" class="btn btn-success" style="width: 100%; padding: 15px; font-size: 18px;">إرسال البيانات والتسجيل إلى الشيت والدرايف 🚀</button>
+                <button type="submit" class="btn btn-success" style="width: 100%; padding: 15px; font-size: 18px;">Daten und Aufnahme senden 🚀</button>
             </div>
             <p id="statusMessage"></p>
         </form>
@@ -198,7 +214,7 @@
                     const reader = new FileReader();
                     reader.readAsDataURL(audioBlob);
                     reader.onloadend = () => {
-                        base64Audio = reader.result; // تحويل الملف لصيغة تناسب الإرسال للسيرفر
+                        base64Audio = reader.result;
                     };
                 };
 
@@ -214,10 +230,10 @@
                     timerDisplay.textContent = `${mins}:${secs}`;
                 }, 1000);
 
-                statusMessage.textContent = "جاري التسجيل الان...";
+                statusMessage.textContent = "Aufnahme läuft...";
                 statusMessage.style.color = "#ea580c";
             } catch (err) {
-                alert("يرجى السماح للمتصفح بالوصول إلى الميكروفون.");
+                alert("Bitte erlauben Sie den Zugriff auf das Mikrofon.");
             }
         });
 
@@ -229,13 +245,13 @@
             clearInterval(timerInterval);
             startBtn.disabled = false;
             stopBtn.disabled = true;
-            statusMessage.textContent = "تم إيقاف التسجيل بنجاح وجاهز للإرسال!";
+            statusMessage.textContent = "Aufnahme gestoppt und bereit zum Senden!";
             statusMessage.style.color = "#10b981";
         });
 
         examForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            statusMessage.textContent = "جاري رفع البيانات والتسجيل الصوتي إلى Google Drive & Sheet...";
+            statusMessage.textContent = "Daten und Audioaufnahme werden gesendet...";
             statusMessage.style.color = "#ea580c";
 
             const formData = {
@@ -245,6 +261,8 @@
                 instructor: document.getElementById('instructor').value,
                 examLevel: document.getElementById('examLevel').value,
                 grades: document.getElementById('grades').value,
+                statusResult: document.getElementById('statusResult').value,
+                retakeRequired: document.getElementById('retakeRequired').value,
                 notes: document.getElementById('notes').value,
                 audioData: base64Audio
             };
@@ -259,13 +277,13 @@
                     body: JSON.stringify(formData)
                 });
 
-                statusMessage.textContent = "تم إرسال البيانات وحفظ التسجيل بنجاح تام! ✅";
+                statusMessage.textContent = "Daten und Aufnahme erfolgreich gesendet! ✅";
                 statusMessage.style.color = "#10b981";
                 examForm.reset();
                 timerDisplay.textContent = "00:00";
                 base64Audio = "";
             } catch (error) {
-                statusMessage.textContent = "حدث خطأ أثناء الإرسال، يرجى المحاولة مرة أخرى.";
+                statusMessage.textContent = "Fehler beim Senden. Bitte versuchen Sie es erneut.";
                 statusMessage.style.color = "#ef4444";
             }
         });
