@@ -123,8 +123,9 @@
             border: 2px dashed #cbd5e1;
             padding: 20px;
             border-radius: 12px;
-            text-align: center;
             margin-top: 25px;
+            margin-bottom: 25px;
+            text-align: center;
         }
         .btn {
             background: var(--primary-color);
@@ -192,6 +193,14 @@
                 </select>
             </div>
 
+            <div class="recorder-section">
+                <label>Mündliche Prüfung (Audioaufnahme):</label>
+                <button type="button" id="startBtn" class="btn">🎙️ Aufnahme starten</button>
+                <button type="button" id="stopBtn" class="btn btn-danger" disabled>⏹️ Aufnahme stoppen</button>
+                <p id="timer" style="margin-top: 10px; font-weight: bold; color: #64748b;">00:00</p>
+                <audio id="audioElement" controls></audio>
+            </div>
+
             <div class="criteria-box">
                 <h3>Bewertungskriterien (1 bis 5)</h3>
                 
@@ -241,13 +250,14 @@
             </div>
 
             <div class="form-group">
-                <label for="grades">Noten / Punkte:</label>
-                <input type="text" id="grades" placeholder="Note eingeben...">
+                <label for="feedback">Feedback & Notizen:</label>
+                <textarea id="feedback" rows="3" placeholder="Detailliertes Feedback zum Sprechen..."></textarea>
             </div>
 
             <div class="form-group">
                 <label for="statusResult">Ergebnis:</label>
-                <select id="statusResult">
+                <select id="statusResult" required>
+                    <option value="" disabled selected>Ergebnis auswählen...</option>
                     <option value="Bestanden">Bestanden</option>
                     <option value="Nicht Bestanden">Nicht Bestanden</option>
                 </select>
@@ -255,23 +265,16 @@
 
             <div class="form-group">
                 <label for="retakeRequired">Wiederholung erforderlich?</label>
-                <select id="retakeRequired">
+                <select id="retakeRequired" required>
+                    <option value="" disabled selected>Bitte wählen...</option>
                     <option value="Nein">Nein</option>
                     <option value="Ja">Ja</option>
                 </select>
             </div>
 
             <div class="form-group">
-                <label for="notes">Bemerkungen:</label>
-                <textarea id="notes" rows="3" placeholder="Zusätzliche Bemerkungen..."></textarea>
-            </div>
-
-            <div class="recorder-section">
-                <label>Mündliche Prüfung (Audioaufnahme):</label>
-                <button type="button" id="startBtn" class="btn">🎙️ Aufnahme starten</button>
-                <button type="button" id="stopBtn" class="btn btn-danger" disabled>⏹️ Aufnahme stoppen</button>
-                <p id="timer" style="margin-top: 10px; font-weight: bold; color: #64748b;">00:00</p>
-                <audio id="audioElement" controls></audio>
+                <label for="notes">Bemerkungen (Allgemein):</label>
+                <textarea id="notes" rows="2" placeholder="Zusätzliche Bemerkungen..."></textarea>
             </div>
 
             <div style="margin-top: 30px; text-align: center;">
@@ -382,7 +385,7 @@
                 critF: document.getElementById('critF').value,
                 critK: document.getElementById('critK').value,
                 totalScore: totalScoreDisplay.textContent,
-                grades: document.getElementById('grades').value,
+                feedback: document.getElementById('feedback').value,
                 statusResult: document.getElementById('statusResult').value,
                 retakeRequired: document.getElementById('retakeRequired').value,
                 notes: document.getElementById('notes').value,
