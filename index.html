@@ -108,14 +108,14 @@
             padding: 8px;
         }
         .total-box {
-            background: #fff7ed;
-            border: 2px solid var(--primary-color);
+            background: #f1f5f9;
+            border: 2px solid #94a3b8;
             padding: 15px;
             border-radius: 8px;
             text-align: center;
             margin-top: 15px;
             font-weight: bold;
-            color: var(--secondary-color);
+            color: #475569;
             font-size: 18px;
         }
         .recorder-section {
@@ -166,7 +166,7 @@
 
             <div class="form-group">
                 <label for="idNumber">ID / Nummer:</label>
-                <input type="text" id="idNumber" placeholder="ID أو الرقم التعريفي...">
+                <input type="text" id="idNumber" placeholder="ID oder Nummer eingeben...">
             </div>
 
             <div class="form-group">
@@ -194,38 +194,49 @@
 
             <div class="criteria-box">
                 <h3>Bewertungskriterien (1 bis 5)</h3>
+                
                 <div class="criteria-row">
                     <label>Erfüllung (E):</label>
-                    <select id="critE" class="score-select">
+                    <select id="critE" class="score-select" required>
+                        <option value="" disabled selected>0 (Wählen...)</option>
                         <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
                     </select>
                 </div>
+
                 <div class="criteria-row">
                     <label>Wortschatz und Redemittel (W/R):</label>
-                    <select id="critWR" class="score-select">
+                    <select id="critWR" class="score-select" required>
+                        <option value="" disabled selected>0 (Wählen...)</option>
                         <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
                     </select>
                 </div>
+
                 <div class="criteria-row">
                     <label>Aussprache (A):</label>
-                    <select id="critA" class="score-select">
+                    <select id="critA" class="score-select" required>
+                        <option value="" disabled selected>0 (Wählen...)</option>
                         <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
                     </select>
                 </div>
+
                 <div class="criteria-row">
                     <label>Flüssigkeit (F):</label>
-                    <select id="critF" class="score-select">
+                    <select id="critF" class="score-select" required>
+                        <option value="" disabled selected>0 (Wählen...)</option>
                         <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
                     </select>
                 </div>
+
                 <div class="criteria-row">
                     <label>Korrektheit (K):</label>
-                    <select id="critK" class="score-select">
+                    <select id="critK" class="score-select" required>
+                        <option value="" disabled selected>0 (Wählen...)</option>
                         <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
                     </select>
                 </div>
+
                 <div class="total-box">
-                    Gesamtpunkte (Total): <span id="totalScore">5</span> / 25
+                    Gesamtpunkte (Total): <span id="totalScore">0</span> / 25
                 </div>
             </div>
 
@@ -394,7 +405,7 @@
                 timerDisplay.textContent = "00:00";
                 calculateTotal();
                 base64Audio = "";
-            } الجزئية catch (error) {
+            } catch (error) {
                 statusMessage.textContent = "Fehler beim Senden. Bitte versuchen Sie es erneut.";
                 statusMessage.style.color = "#ef4444";
             }
