@@ -186,52 +186,45 @@
                 </select>
             </div>
 
-            <!-- قسم معايير التقييم الشفوي -->
             <div class="criteria-box">
                 <h3>Bewertungskriterien (1 bis 5)</h3>
-                
                 <div class="criteria-row">
                     <label>Erfüllung (E):</label>
                     <select id="critE" class="score-select">
                         <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
                     </select>
                 </div>
-
                 <div class="criteria-row">
                     <label>Wortschatz und Redemittel (W/R):</label>
                     <select id="critWR" class="score-select">
                         <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
                     </select>
                 </div>
-
                 <div class="criteria-row">
                     <label>Aussprache (A):</label>
                     <select id="critA" class="score-select">
                         <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
                     </select>
                 </div>
-
                 <div class="criteria-row">
                     <label>Flüssigkeit (F):</label>
                     <select id="critF" class="score-select">
                         <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
                     </select>
                 </div>
-
                 <div class="criteria-row">
                     <label>Korrektheit (K):</label>
                     <select id="critK" class="score-select">
                         <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
                     </select>
                 </div>
-
                 <div class="total-box">
                     Gesamtpunkte (Total): <span id="totalScore">5</span> / 25
                 </div>
             </div>
 
             <div class="form-group">
-                <label for="grades">Noten / Zusätzliche Punkte:</label>
+                <label for="grades">Noten / Punkte:</label>
                 <input type="text" id="grades" placeholder="Note eingeben...">
             </div>
 
@@ -272,7 +265,6 @@
     </div>
 
     <script>
-        // حساب المجموع أوتوماتيكياً عند تغيير أي درجة
         const scoreSelects = document.querySelectorAll('.score-select');
         const totalScoreDisplay = document.getElementById('totalScore');
 
@@ -338,7 +330,7 @@
                 statusMessage.textContent = "Aufnahme läuft...";
                 statusMessage.style.color = "#ea580c";
             } catch (err) {
-                alert("Bitte erlauben Sie den Zugriff auf das Mikrofon.");
+                alert("Bitte erlauben Sie den Zugriff على das Mikrofon.");
             }
         });
 
