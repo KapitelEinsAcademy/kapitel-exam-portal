@@ -51,6 +51,14 @@
             border-bottom: 2px solid #e2e8f0;
             padding-bottom: 20px;
         }
+        .logo-img {
+            max-width: 140px;
+            height: auto;
+            margin-bottom: 15px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
         .header h1 {
             color: var(--primary-color);
             font-size: 26px;
@@ -155,6 +163,7 @@
 <body>
     <div class="container">
         <div class="header">
+            <img src="رابط_صورة_اللوجو_هنا" alt="Kapitel Eins Logo" class="logo-img">
             <h1>Kapitel Eins Sprachakademie</h1>
             <p>Prüfungsanmeldung & Mündliche Prüfung</p>
         </div>
@@ -168,6 +177,15 @@
             <div class="form-group">
                 <label for="idNumber">ID / Nummer:</label>
                 <input type="text" id="idNumber" placeholder="ID oder Nummer eingeben...">
+            </div>
+
+            <div class="form-group">
+                <label for="examAttempt">Prüfungsversuch:</label>
+                <select id="examAttempt" required>
+                    <option value="" disabled selected>Bitte wählen (Erstes Mal / Wiederholung)...</option>
+                    <option value="Erstes Mal">Erstes Mal (أول مرة)</option>
+                    <option value="Wiederholung">Wiederholung (إعادة امتحان)</option>
+                </select>
             </div>
 
             <div class="form-group">
@@ -391,6 +409,7 @@
             const formData = {
                 fullName: document.getElementById('fullName').value,
                 idNumber: document.getElementById('idNumber').value,
+                examAttempt: document.getElementById('examAttempt').value,
                 examDate: document.getElementById('examDate').value,
                 instructor: document.getElementById('instructor').value,
                 examLevel: document.getElementById('examLevel').value,
