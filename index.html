@@ -180,11 +180,20 @@
             </div>
 
             <div class="form-group">
+                <label for="examType">Test-Art:</label>
+                <select id="examType" required>
+                    <option value="" disabled selected>Bitte wählen (Einstufungstest / Final Test)...</option>
+                    <option value="Einstufungstest">Einstufungstest</option>
+                    <option value="Final Test">Final Test</option>
+                </select>
+            </div>
+
+            <div class="form-group">
                 <label for="examAttempt">Prüfungsversuch:</label>
                 <select id="examAttempt" required>
                     <option value="" disabled selected>Bitte wählen (Erstes Mal / Wiederholung)...</option>
-                    <option value="Erstes Mal">Erstes Mal (أول مرة)</option>
-                    <option value="Wiederholung">Wiederholung (إعادة امتحان)</option>
+                    <option value="Erstes Mal">Erstes Mal</option>
+                    <option value="Wiederholung">Wiederholung</option>
                 </select>
             </div>
 
@@ -409,6 +418,7 @@
             const formData = {
                 fullName: document.getElementById('fullName').value,
                 idNumber: document.getElementById('idNumber').value,
+                examType: document.getElementById('examType').value,
                 examAttempt: document.getElementById('examAttempt').value,
                 examDate: document.getElementById('examDate').value,
                 instructor: document.getElementById('instructor').value,
