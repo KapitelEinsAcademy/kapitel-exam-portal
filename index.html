@@ -51,17 +51,9 @@
             border-bottom: 2px solid #e2e8f0;
             padding-bottom: 20px;
         }
-        .logo-img {
-            max-width: 140px;
-            height: auto;
-            margin-bottom: 15px;
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-        }
         .header h1 {
             color: var(--primary-color);
-            font-size: 26px;
+            font-size: 28px;
             margin: 0 0 10px 0;
         }
         .form-group {
@@ -139,8 +131,8 @@
             background: var(--primary-color);
             color: white;
             border: none;
-            padding: 12px 24px;
-            font-size: 16px;
+            padding: 12px 20px;
+            font-size: 15px;
             border-radius: 8px;
             cursor: pointer;
             margin: 5px;
@@ -148,6 +140,8 @@
             transition: background 0.3s;
         }
         .btn:hover { background: var(--secondary-color); }
+        .btn-warning { background: #f59e0b; color: white; }
+        .btn-warning:hover { background: #d97706; }
         .btn-danger { background: #ef4444; }
         .btn-danger:hover { background: #dc2626; }
         .btn-success { background: #10b981; }
@@ -220,8 +214,6 @@
                     <option value="B2.2">B2.2</option>
                     <option value="C1.1">C1.1</option>
                     <option value="C1.2">C1.2</option>
-                    <option value="C2.1">C2.1</option>
-                    <option value="C2.2">C2.2</option>
                     <option value="Konv Nach A2">Konv Nach A2</option>
                     <option value="Konv Nach B1">Konv Nach B1</option>
                     <option value="Konv Nach B2">Konv Nach B2</option>
@@ -230,14 +222,14 @@
                     <option value="Beratung B1">Beratung B1</option>
                     <option value="Beratung B2">Beratung B2</option>
                     <option value="Beratung C1">Beratung C1</option>
-                    <option value="Beratung C2">Beratung C2</option>
                 </select>
             </div>
 
             <div class="recorder-section">
                 <label>Mündliche Prüfung (Audioaufnahme):</label>
-                <button type="button" id="startBtn" class="btn">🎙️ Aufnahme starten</button>
-                <button type="button" id="stopBtn" class="btn btn-danger" disabled>⏹️ Aufnahme stoppen</button>
+                <button type="button" id="startBtn" class="btn">🎙️ Start</button>
+                <button type="button" id="pauseBtn" class="btn btn-warning" disabled>⏸️ Pause</button>
+                <button type="button" id="stopBtn" class="btn btn-danger" disabled>⏹️ Stوب & Fertig</button>
                 <p id="timer" style="margin-top: 10px; font-weight: bold; color: #64748b;">00:00</p>
                 <audio id="audioElement" controls></audio>
             </div>
@@ -305,7 +297,7 @@
             </div>
 
             <div class="form-group">
-                <label for="retakeRequired">Wiederholung erforderlich?</label>
+                <label for="retakeRequired">Wiederholung erforderlich؟</label>
                 <select id="retakeRequired" required>
                     <option value="" disabled selected>Bitte wählen...</option>
                     <option value="Nein">Nein</option>
@@ -349,12 +341,13 @@
         let audioStream = null;
 
         const startBtn = document.getElementById('startBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
         const stopBtn = document.getElementById('stopBtn');
-        const audioElement = document.getElementById('audioElement');
         const timerDisplay = document.getElementById('timer');
         const examForm = document.getElementById('examForm');
         const statusMessage = document.getElementById('statusMessage');
 
+        // زر البدء
         startBtn.addEventListener('click', async () => {
             try {
                 audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -378,7 +371,9 @@
 
                 mediaRecorder.start();
                 startBtn.disabled = true;
+                pauseBtn.disabled = false;
                 stopBtn.disabled = false;
+                pauseBtn.textContent = "⏸️ Pause";
                 
                 seconds = 0;
                 timerInterval = setInterval(() => {
@@ -395,6 +390,29 @@
             }
         });
 
+        // زر الإيقاف المؤقت واستكمال التسجيل (Pause / Resume)
+        pauseBtn.addEventListener('click', () => {
+            if (mediaRecorder.state === "recording") {
+                mediaRecorder.pause();
+                clearInterval(timerInterval);
+                pauseBtn.textContent = "▶️ Fortsetzen";
+                statusMessage.textContent = "Aufnahme pausiert.";
+                statusMessage.style.color = "#f59e0b";
+            } else if (mediaRecorder.state === "paused") {
+                mediaRecorder.resume();
+                timerInterval = setInterval(() => {
+                    seconds++;
+                    let mins = Math.floor(seconds / 60).toString().padStart(2, '0');
+                    let secs = (seconds % 60).toString().padStart(2, '0');
+                    timerDisplay.textContent = `${mins}:${secs}`;
+                }, 1000);
+                pauseBtn.textContent = "⏸️ Pause";
+                statusMessage.textContent = "Aufnahme läuft...";
+                statusMessage.style.color = "#ea580c";
+            }
+        });
+
+        // زر الإنهاء النهائي
         stopBtn.addEventListener('click', () => {
             if (mediaRecorder && mediaRecorder.state !== "inactive") {
                 mediaRecorder.stop();
@@ -404,7 +422,9 @@
             }
             clearInterval(timerInterval);
             startBtn.disabled = false;
+            pauseBtn.disabled = true;
             stopBtn.disabled = true;
+            pauseBtn.textContent = "⏸️ Pause";
             statusMessage.textContent = "Aufnahme gestoppt und bereit zum Senden!";
             statusMessage.style.color = "#10b981";
         });
@@ -435,7 +455,7 @@
                 audioData: base64Audio
             };
 
-            const scriptURL = "https://script.google.com/macros/s/AKfycbzAx9IfP1KCeJ0C2SLjtyUT3cdkG7s770BN49TF34XkS-ywO-RoSKaUnFHIyz3AtfSb/exec";
+            const scriptURL = "https://script.google.com/macros/s/AKfycbw7gIwnS8cRGFHlHRNlqwTMx0IUzbG3SbDV9bbGmbD6fq_X5Ihft97333132Mn-nCZN/exec";
 
             try {
                 const response = await fetch(scriptURL, {
