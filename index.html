@@ -146,6 +146,7 @@
         .btn-danger:hover { background: #dc2626; }
         .btn-success { background: #10b981; }
         .btn-success:hover { background: #059669; }
+        .btn:disabled, .btn-success:disabled { background: #cbd5e1; cursor: not-allowed; }
         #audioElement { display: none; }
         #statusMessage {
             margin-top: 15px;
@@ -214,6 +215,8 @@
                     <option value="B2.2">B2.2</option>
                     <option value="C1.1">C1.1</option>
                     <option value="C1.2">C1.2</option>
+                    <option value="C2.1">C2.1</option>
+                    <option value="C2.2">C2.2</option>
                     <option value="Konv Nach A2">Konv Nach A2</option>
                     <option value="Konv Nach B1">Konv Nach B1</option>
                     <option value="Konv Nach B2">Konv Nach B2</option>
@@ -222,6 +225,7 @@
                     <option value="Beratung B1">Beratung B1</option>
                     <option value="Beratung B2">Beratung B2</option>
                     <option value="Beratung C1">Beratung C1</option>
+                    <option value="Beratung C2">Beratung C2</option>
                 </select>
             </div>
 
@@ -229,7 +233,7 @@
                 <label>Mündliche Prüfung (Audioaufnahme):</label>
                 <button type="button" id="startBtn" class="btn">🎙️ Start</button>
                 <button type="button" id="pauseBtn" class="btn btn-warning" disabled>⏸️ Pause</button>
-                <button type="button" id="stopBtn" class="btn btn-danger" disabled>⏹️ Stop & Fertig</button>
+                <button type="button" id="stopBtn" class="btn btn-danger" disabled>⏹️ Stopp & Fertig</button>
                 <p id="timer" style="margin-top: 10px; font-weight: bold; color: #64748b;">00:00</p>
                 <audio id="audioElement" controls></audio>
             </div>
@@ -246,7 +250,7 @@
                 </div>
 
                 <div class="criteria-row">
-                    <label>Ausdrucksweise (A):</label>
+                    <label>Wortschatz und Redemittel (W/R):</label>
                     <select id="critWR" class="score-select" required>
                         <option value="" disabled selected>0 (Wählen...)</option>
                         <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
@@ -284,7 +288,7 @@
 
             <div class="form-group">
                 <label for="feedback">Feedback & Notizen:</label>
-                <textarea id="feedback" rows="3" placeholder="Detailliertes Feedback zum Sprechen..."></textarea>
+                <textarea id="feedback" rows="3" placeholder="Detailliertes Feedback zum Sprechen... (ويمكن وضع رابط زووم هنا)"></textarea>
             </div>
 
             <div class="form-group">
@@ -292,12 +296,12 @@
                 <select id="statusResult" required>
                     <option value="" disabled selected>Ergebnis auswählen...</option>
                     <option value="Bestanden">Bestanden</option>
-                    <option value="Nicht">Nicht Bestanden</option>
+                    <option value="Nicht">Nicht</option>
                 </select>
             </div>
 
             <div class="form-group">
-                <label for="retakeRequired">Wiederholung erforderlich</label>
+                <label for="retakeRequired">Wiederholung erforderlich?</label>
                 <select id="retakeRequired" required>
                     <option value="" disabled selected>Bitte wählen...</option>
                     <option value="Nein">Nein</option>
@@ -311,7 +315,7 @@
             </div>
 
             <div style="margin-top: 30px; text-align: center;">
-                <button type="submit" class="btn btn-success" style="width: 100%; padding: 15px; font-size: 18px;">Daten und Aufnahme senden 🚀</button>
+                <button type="submit" id="submitBtn" class="btn btn-success" style="width: 100%; padding: 15px; font-size: 18px;" disabled>🎙️ برجاء إتمام التسجيل الصوتي أولاً للإرسال</button>
             </div>
             <p id="statusMessage"></p>
         </form>
@@ -343,11 +347,11 @@
         const startBtn = document.getElementById('startBtn');
         const pauseBtn = document.getElementById('pauseBtn');
         const stopBtn = document.getElementById('stopBtn');
+        const submitBtn = document.getElementById('submitBtn');
         const timerDisplay = document.getElementById('timer');
         const examForm = document.getElementById('examForm');
         const statusMessage = document.getElementById('statusMessage');
 
-        // زر البدء
         startBtn.addEventListener('click', async () => {
             try {
                 audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -361,11 +365,15 @@
                 };
 
                 mediaRecorder.onstop = () => {
-                    const audioBlob = new Blob(audioChunks, { type: 'audio/mp3' });
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
                     const reader = new FileReader();
                     reader.readAsDataURL(audioBlob);
                     reader.onloadend = () => {
                         base64Audio = reader.result;
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = "Daten und Aufnahme senden 🚀";
+                        statusMessage.textContent = "Aufnahme gestoppt und bereit zum Senden! ✅";
+                        statusMessage.style.color = "#10b981";
                     };
                 };
 
@@ -373,6 +381,7 @@
                 startBtn.disabled = true;
                 pauseBtn.disabled = false;
                 stopBtn.disabled = false;
+                submitBtn.disabled = true;
                 pauseBtn.textContent = "⏸️ Pause";
                 
                 seconds = 0;
@@ -386,11 +395,10 @@
                 statusMessage.textContent = "Aufnahme läuft...";
                 statusMessage.style.color = "#ea580c";
             } catch (err) {
-                alert("Bitte erlauben Sie den Zugriff auf das Mikrofon.");
+                alert("Bitte erlauben Sie den Zugriff على Mikrofon.");
             }
         });
 
-        // زر الإيقاف المؤقت واستكمال التسجيل (Pause / Resume)
         pauseBtn.addEventListener('click', () => {
             if (mediaRecorder.state === "recording") {
                 mediaRecorder.pause();
@@ -412,7 +420,6 @@
             }
         });
 
-        // زر الإنهاء النهائي
         stopBtn.addEventListener('click', () => {
             if (mediaRecorder && mediaRecorder.state !== "inactive") {
                 mediaRecorder.stop();
@@ -425,12 +432,12 @@
             pauseBtn.disabled = true;
             stopBtn.disabled = true;
             pauseBtn.textContent = "⏸️ Pause";
-            statusMessage.textContent = "Aufnahme gestoppt und bereit zum Senden!";
-            statusMessage.style.color = "#10b981";
+            statusMessage.textContent = "Wird verarbeitet...";
         });
 
         examForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            submitBtn.disabled = true;
             statusMessage.textContent = "Daten und Audioaufnahme werden gesendet...";
             statusMessage.style.color = "#ea580c";
 
@@ -455,7 +462,7 @@
                 audioData: base64Audio
             };
 
-            const scriptURL = "https://script.google.com/macros/s/AKfycbxFwZ644xngdn39yddqGWHiT8EDde3Uq8cYSTgTyEDedc4k-atcxeZ89BS9rmeo4kv1/exec";
+            const scriptURL = "https://script.google.com/macros/s/AKfycbw7gIwnS8cRGFHlHRNlqwTMx0IUzbG3SbDV9bbGmbD6fq_X5Ihft97333132Mn-nCZN/exec";
 
             try {
                 const response = await fetch(scriptURL, {
@@ -471,9 +478,12 @@
                 timerDisplay.textContent = "00:00";
                 calculateTotal();
                 base64Audio = "";
+                submitBtn.disabled = true;
+                submitBtn.textContent = "🎙️ برجاء إتمام التسجيل الصوتي أولاً للإرسال";
             } catch (error) {
                 statusMessage.textContent = "Fehler beim Senden. Bitte versuchen Sie es erneut.";
                 statusMessage.style.color = "#ef4444";
+                submitBtn.disabled = false;
             }
         });
     </script>
