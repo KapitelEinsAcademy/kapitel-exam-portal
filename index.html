@@ -35,7 +35,6 @@
             z-index: 0;
             pointer-events: none;
         }
-        /* شاشة الحماية بكلمة السر */
         #loginOverlay {
             position: fixed;
             top: 0;
@@ -70,7 +69,7 @@
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
             position: relative;
             z-index: 1;
-            display: none; /* مخفي افتراضياً حتى إدخال كلمة السر */
+            display: none;
         }
         .header {
             text-align: center;
@@ -184,7 +183,6 @@
 </head>
 <body>
 
-    <!-- نافذة تسجيل الدخول -->
     <div id="loginOverlay">
         <div class="login-box">
             <h2>🔒 Zugang geschützt</h2>
@@ -195,7 +193,6 @@
         </div>
     </div>
 
-    <!-- المحتوى الرئيسي للمنصة -->
     <div class="container" id="mainContainer">
         <div class="header">
             <h1>Kapitel Eins Sprachakademie</h1>
@@ -270,8 +267,8 @@
             </div>
 
             <div class="recorder-section">
-                <label>Mündliche Prüfung (Audioaufnahme - Offline & Online):</label>
-                <p style="font-size: 13px; color: #64748b; margin-top: 2px;">للامتحان أونلاين: اختر "مشاركة الصوت (Share tab audio)" عند بدء التسجيل لسماع صوت الطالب.</p>
+                <label>Mündliche Prüfung (Audioaufnahme):</label>
+                <p style="font-size: 13px; color: #64748b; margin-top: 2px;">للامتحان أونلاين: اختر "مشاركة الصوت (Share tab audio)" لسماع صوت الطالب.</p>
                 <button type="button" id="startBtn" class="btn">🎙️ Start</button>
                 <button type="button" id="pauseBtn" class="btn btn-warning" disabled>⏸️ Pause</button>
                 <button type="button" id="stopBtn" class="btn btn-danger" disabled>⏹️ Stopp & Fertig</button>
@@ -363,9 +360,7 @@
     </div>
 
     <script>
-        // ================= إعداد كلمة السر =================
-        const ACADEMY_PASSWORD = "KapitelEins2026"; // يمكنك تغيير كلمة السر متى شئت
-        // ====================================================
+        const ACADEMY_PASSWORD = "KapitelEins2026";
 
         const loginOverlay = document.getElementById('loginOverlay');
         const mainContainer = document.getElementById('mainContainer');
@@ -395,7 +390,6 @@
             if (e.key === 'Enter') checkPassword();
         });
 
-        // ================= حساب الدرجات =================
         const scoreSelects = document.querySelectorAll('.score-select');
         const totalScoreDisplay = document.getElementById('totalScore');
 
@@ -411,10 +405,9 @@
             select.addEventListener('change', calculateTotal);
         });
 
-        // ================= تسجيل الصوت (النظام + المايك) =================
         let mediaRecorder;
         let audioChunks = [];
-        let timerInterval;
+        let timerInterval = null;
         let seconds = 0;
         let base64Audio = "";
         let audioStream = null;
@@ -429,15 +422,30 @@
         const examForm = document.getElementById('examForm');
         const statusMessage = document.getElementById('statusMessage');
 
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                seconds++;
+                let mins = Math.floor(seconds / 60).toString().padStart(2, '0');
+                let secs = (seconds % 60).toString().padStart(2, '0');
+                timerDisplay.textContent = `${mins}:${secs}`;
+            }, 1000);
+        }
+
+        function stopTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+        }
+
         startBtn.addEventListener('click', async () => {
             try {
-                // محاولة طلب مشاركة صوت الشاشة/التبويب (لصوت الطالب في الاجتماع)
                 displayStream = await navigator.mediaDevices.getDisplayMedia({ 
                     video: true, 
                     audio: { suppressLocalAudioPlayback: false, echoCancellation: true, noiseSuppression: true }
                 }).catch(() => null);
 
-                // طلب صوت الميكروفون الخاص بالمدرس
                 micStream = await navigator.mediaDevices.getUserMedia({ 
                     audio: { echoCancellation: true, noiseSuppression: true } 
                 });
@@ -445,13 +453,11 @@
                 const audioContext = new AudioContext();
                 const dest = audioContext.createMediaStreamDestination();
                 
-                // دمج صوت النظام/التبويب إن وجد
                 if (displayStream && displayStream.getAudioTracks().length > 0) {
                     const source1 = audioContext.createMediaStreamSource(new MediaStream([displayStream.getAudioTracks()[0]]));
                     source1.connect(dest);
                 }
                 
-                // دمج صوت الميكروفون للمدرس
                 if (micStream && micStream.getAudioTracks().length > 0) {
                     const source2 = audioContext.createMediaStreamSource(micStream);
                     source2.connect(dest);
@@ -461,7 +467,6 @@
                 mediaRecorder = new MediaRecorder(audioStream);
                 audioChunks = [];
 
-                // إيقاف مسار الفيديو إن وجد والاكتفاء بالصوت فقط لتخفيف المساحة
                 if (displayStream) {
                     displayStream.getVideoTracks().forEach(track => track.stop());
                 }
@@ -493,12 +498,7 @@
                 pauseBtn.textContent = "⏸️ Pause";
                 
                 seconds = 0;
-                timerInterval = setInterval(() => {
-                    seconds++;
-                    let mins = Math.floor(seconds / 60).toString().padStart(2, '0');
-                    let secs = (seconds % 60).toString().padStart(2, '0');
-                    timerDisplay.textContent = `${mins}:${secs}`;
-                }, 1000);
+                startTimer();
 
                 statusMessage.textContent = "Aufnahme läuft (Lehrer + Online-Audio)...";
                 statusMessage.style.color = "#ea580c";
@@ -511,18 +511,13 @@
         pauseBtn.addEventListener('click', () => {
             if (mediaRecorder.state === "recording") {
                 mediaRecorder.pause();
-                clearInterval(timerInterval);
+                stopTimer();
                 pauseBtn.textContent = "▶️ Fortsetzen";
                 statusMessage.textContent = "Aufnahme pausiert.";
                 statusMessage.style.color = "#f59e0b";
             } else if (mediaRecorder.state === "paused") {
                 mediaRecorder.resume();
-                timerInterval = setInterval(() => {
-                    seconds++;
-                    let mins = Math.floor(seconds / 60).toString().padStart(2, '0');
-                    let secs = (seconds % 60).toString().padStart(2, '0');
-                    timerDisplay.textContent = `${mins}:${secs}`;
-                }, 1000);
+                startTimer();
                 pauseBtn.textContent = "⏸️ Pause";
                 statusMessage.textContent = "Aufnahme läuft...";
                 statusMessage.style.color = "#ea580c";
@@ -530,6 +525,7 @@
         });
 
         stopBtn.addEventListener('click', () => {
+            stopTimer();
             if (mediaRecorder && mediaRecorder.state !== "inactive") {
                 mediaRecorder.stop();
             }
@@ -539,7 +535,6 @@
             if (displayStream) {
                 displayStream.getTracks().forEach(track => track.stop());
             }
-            clearInterval(timerInterval);
             startBtn.disabled = false;
             pauseBtn.disabled = true;
             stopBtn.disabled = true;
@@ -547,7 +542,6 @@
             statusMessage.textContent = "Wird verarbeitet...";
         });
 
-        // ================= إرسال البيانات لسيرفر Apps Script =================
         examForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             submitBtn.disabled = true;
