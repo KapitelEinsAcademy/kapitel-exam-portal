@@ -184,6 +184,15 @@
             </div>
 
             <div class="form-group">
+                <label for="examMode">Prüfungsmodus (Online / Offline):</label>
+                <select id="examMode" required>
+                    <option value="" disabled selected>Bitte wählen (Online / Offline)...</option>
+                    <option value="Online">Online</option>
+                    <option value="Offline">Offline</option>
+                </select>
+            </div>
+
+            <div class="form-group">
                 <label for="examAttempt">Prüfungsversuch:</label>
                 <select id="examAttempt" required>
                     <option value="" disabled selected>Bitte wählen (Erstes Mal / Wiederholung)...</option>
@@ -504,6 +513,7 @@
                 fullName: document.getElementById('fullName').value,
                 idNumber: document.getElementById('idNumber').value,
                 examType: document.getElementById('examType').value,
+                examMode: document.getElementById('examMode').value,
                 examAttempt: document.getElementById('examAttempt').value,
                 examDate: document.getElementById('examDate').value,
                 instructor: document.getElementById('instructor').value,
