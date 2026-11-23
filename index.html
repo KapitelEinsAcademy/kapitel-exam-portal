@@ -171,7 +171,7 @@
 
             <div class="form-group">
                 <label for="idNumber">ID / Nummer:</label>
-                <input type="text" id="idNumber" placeholder="ID oder Nummer eingeben...">
+                <input type="text" id="idNumber" required placeholder="ID oder Nummer eingeben...">
             </div>
 
             <div class="form-group">
@@ -203,12 +203,12 @@
 
             <div class="form-group">
                 <label for="examDate">Prüfungsdatum:</label>
-                <input type="date" id="examDate">
+                <input type="date" id="examDate" required>
             </div>
 
             <div class="form-group">
                 <label for="instructor">Prüfer / Instructor:</label>
-                <input type="text" id="instructor" placeholder="Name des Prüfers...">
+                <input type="text" id="instructor" required placeholder="Name des Prüfers...">
             </div>
 
             <div class="form-group">
@@ -299,7 +299,7 @@
 
             <div class="form-group">
                 <label for="feedback">Feedback & Notizen (Zoom-Link):</label>
-                <textarea id="feedback" rows="3" placeholder="Detailliertes Feedback zum Sprechen... أو وضع رابط زووم هنا"></textarea>
+                <textarea id="feedback" rows="3" required placeholder="Detailliertes Feedback zum Sprechen... أو وضع رابط زووم هنا"></textarea>
             </div>
 
             <div class="form-group">
@@ -320,9 +320,37 @@
                 </select>
             </div>
 
+            <div class="form-group" id="recommendedLevelGroup" style="display: none;">
+                <label for="recommendedLevel">Empfohlenes Niveau (المستوى المرشح للطالب):</label>
+                <select id="recommendedLevel">
+                    <option value="" disabled selected>Empfohlenes Niveau auswählen...</option>
+                    <option value="A1.1">A1.1</option>
+                    <option value="A1.2">A1.2</option>
+                    <option value="A2.1">A2.1</option>
+                    <option value="A2.2">A2.2</option>
+                    <option value="B1.1">B1.1</option>
+                    <option value="B1.2">B1.2</option>
+                    <option value="B2.1">B2.1</option>
+                    <option value="B2.2">B2.2</option>
+                    <option value="C1.1">C1.1</option>
+                    <option value="C1.2">C1.2</option>
+                    <option value="C2.1">C2.1</option>
+                    <option value="C2.2">C2.2</option>
+                    <option value="Konv Nach A2">Konv Nach A2</option>
+                    <option value="Konv Nach B1">Konv Nach B1</option>
+                    <option value="Konv Nach B2">Konv Nach B2</option>
+                    <option value="Beratung A1">Beratung A1</option>
+                    <option value="Beratung A2">Beratung A2</option>
+                    <option value="Beratung B1">Beratung B1</option>
+                    <option value="Beratung B2">Beratung B2</option>
+                    <option value="Beratung C1">Beratung C1</option>
+                    <option value="Beratung C2">Beratung C2</option>
+                </select>
+            </div>
+
             <div class="form-group">
                 <label for="notes">Bemerkungen (Allgemein):</label>
-                <textarea id="notes" rows="2" placeholder="Zusätzliche Bemerkungen..."></textarea>
+                <textarea id="notes" rows="2" placeholder="Zusätzliche Bemerkungen (optional)..."></textarea>
             </div>
 
             <div style="margin-top: 30px; text-align: center;">
@@ -335,6 +363,22 @@
     <script>
         const scoreSelects = document.querySelectorAll('.score-select');
         const totalScoreDisplay = document.getElementById('totalScore');
+        const examTypeSelect = document.getElementById('examType');
+        const recommendedLevelGroup = document.getElementById('recommendedLevelGroup');
+        const recommendedLevelSelect = document.getElementById('recommendedLevel');
+
+        function toggleRecommendedLevel() {
+            if (examTypeSelect.value === "Einstufungstest") {
+                recommendedLevelGroup.style.display = "block";
+                recommendedLevelSelect.required = true;
+            } else {
+                recommendedLevelGroup.style.display = "none";
+                recommendedLevelSelect.required = false;
+                recommendedLevelSelect.value = "";
+            }
+        }
+
+        examTypeSelect.addEventListener('change', toggleRecommendedLevel);
 
         function calculateTotal() {
             let total = 0;
@@ -505,18 +549,49 @@
 
         examForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+
+            // التحقق من ملء كل الخانات المطلوبة (ما عدا Bemerkungen الأخيرة)
+            const textInputs = [
+                document.getElementById('fullName'),
+                document.getElementById('idNumber'),
+                document.getElementById('instructor'),
+                document.getElementById('feedback')
+            ];
+
+            for (let input of textInputs) {
+                if (!input.value.trim()) {
+                    input.focus();
+                    statusMessage.textContent = "يرجى ملء جميع الخانات المطلوبة قبل الإرسال! ⚠️";
+                    statusMessage.style.color = "#ef4444";
+                    return;
+                }
+            }
+
+            if (examTypeSelect.value === "Einstufungstest" && !recommendedLevelSelect.value) {
+                recommendedLevelSelect.focus();
+                statusMessage.textContent = "يرجى اختيار المستوى المرشح للطالب (Empfohlenes Niveau)! ⚠️";
+                statusMessage.style.color = "#ef4444";
+                return;
+            }
+
+            if (!base64Audio || !base64Audio.startsWith("data:audio")) {
+                statusMessage.textContent = "يرجى إتمام التسجيل الصوتي أولاً قبل الإرسال! ⚠️";
+                statusMessage.style.color = "#ef4444";
+                return;
+            }
+
             submitBtn.disabled = true;
             statusMessage.textContent = "Daten und Audioaufnahme werden gesendet...";
             statusMessage.style.color = "#ea580c";
 
             const formData = {
-                fullName: document.getElementById('fullName').value,
-                idNumber: document.getElementById('idNumber').value,
+                fullName: document.getElementById('fullName').value.trim(),
+                idNumber: document.getElementById('idNumber').value.trim(),
                 examType: document.getElementById('examType').value,
                 examMode: document.getElementById('examMode').value,
                 examAttempt: document.getElementById('examAttempt').value,
                 examDate: document.getElementById('examDate').value,
-                instructor: document.getElementById('instructor').value,
+                instructor: document.getElementById('instructor').value.trim(),
                 examLevel: document.getElementById('examLevel').value,
                 critE: document.getElementById('critE').value,
                 critWR: document.getElementById('critWR').value,
@@ -524,10 +599,11 @@
                 critF: document.getElementById('critF').value,
                 critK: document.getElementById('critK').value,
                 totalScore: totalScoreDisplay.textContent,
-                feedback: document.getElementById('feedback').value,
+                feedback: document.getElementById('feedback').value.trim(),
                 statusResult: document.getElementById('statusResult').value,
                 retakeRequired: document.getElementById('retakeRequired').value,
-                notes: document.getElementById('notes').value,
+                recommendedLevel: examTypeSelect.value === "Einstufungstest" ? recommendedLevelSelect.value : "",
+                notes: document.getElementById('notes').value.trim(),
                 audioData: base64Audio
             };
 
@@ -544,6 +620,7 @@
                 statusMessage.textContent = "Daten und Aufnahme erfolgreich gesendet! ✅";
                 statusMessage.style.color = "#10b981";
                 examForm.reset();
+                toggleRecommendedLevel();
                 timerDisplay.textContent = "00:00";
                 calculateTotal();
                 base64Audio = "";
