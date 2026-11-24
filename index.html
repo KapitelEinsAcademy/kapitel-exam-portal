@@ -125,6 +125,17 @@
             font-weight: bold;
             color: #475569;
             font-size: 18px;
+            transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+        }
+        .total-box.score-pass {
+            background: #dcfce7;
+            border-color: #16a34a;
+            color: #166534;
+        }
+        .total-box.score-fail {
+            background: #fee2e2;
+            border-color: #dc2626;
+            color: #991b1b;
         }
         .recorder-section {
             background: #f8fafc;
@@ -360,7 +371,7 @@
                     </select>
                 </div>
 
-                <div class="total-box">
+                <div class="total-box" id="totalBox">
                     Gesamtpunkte (Total): <span id="totalScore">0</span> / 25
                 </div>
             </div>
@@ -431,6 +442,7 @@
     <script>
         const scoreSelects = document.querySelectorAll('.score-select');
         const totalScoreDisplay = document.getElementById('totalScore');
+        const totalBox = document.getElementById('totalBox');
         const examTypeSelect = document.getElementById('examType');
         const recommendedLevelGroup = document.getElementById('recommendedLevelGroup');
         const recommendedLevelSelect = document.getElementById('recommendedLevel');
@@ -448,12 +460,23 @@
 
         examTypeSelect.addEventListener('change', toggleRecommendedLevel);
 
+        function updateTotalBoxColor(total) {
+            totalBox.classList.remove("score-pass", "score-fail");
+            if (total >= 15) {
+                totalBox.classList.add("score-pass");
+            } else if (total >= 0.5 && total < 15) {
+                totalBox.classList.add("score-fail");
+            }
+        }
+
         function calculateTotal() {
             let total = 0;
             scoreSelects.forEach(select => {
                 total += parseFloat(select.value) || 0;
             });
-            totalScoreDisplay.textContent = Number(total.toFixed(1));
+            const formattedTotal = Number(total.toFixed(1));
+            totalScoreDisplay.textContent = formattedTotal;
+            updateTotalBoxColor(formattedTotal);
         }
 
         scoreSelects.forEach(select => {
