@@ -8,7 +8,7 @@
         :root {
             --primary-color: #ea580c;
             --secondary-color: #c2410c;
-            --text-color: #1e293b;
+            --text-color: #0f172a;
             --bg-gradient: linear-gradient(135deg, #f97316 0%, #ea580c 50%, #c2410c 100%);
         }
         body {
@@ -21,6 +21,7 @@
             min-height: 100vh;
             position: relative;
             background: var(--bg-gradient);
+            color: var(--text-color);
         }
         body::before {
             content: "Kapitel Eins Sprachakademie";
@@ -30,7 +31,7 @@
             transform: translate(-50%, -50%) rotate(-25deg);
             font-size: 8vw;
             font-weight: 900;
-            color: rgba(255, 255, 255, 0.12);
+            color: rgba(255, 255, 255, 0.22);
             white-space: nowrap;
             z-index: 0;
             pointer-events: none;
@@ -38,17 +39,21 @@
         .container {
             width: 100%;
             max-width: 750px;
-            background: linear-gradient(rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.72)), url('./logo.jpg') center/contain no-repeat;
+            background: rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.55);
             padding: 40px;
             border-radius: 20px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
             position: relative;
             z-index: 1;
+            color: var(--text-color);
         }
         .header {
             text-align: center;
             margin-bottom: 30px;
-            border-bottom: 2px solid #e2e8f0;
+            border-bottom: 2px solid rgba(15, 23, 42, 0.15);
             padding-bottom: 20px;
         }
         .academy-logo {
@@ -62,9 +67,14 @@
             border-radius: 10px;
         }
         .header h1 {
-            color: var(--primary-color);
+            color: var(--text-color);
             font-size: 28px;
             margin: 0 0 10px 0;
+        }
+        .header p {
+            color: var(--text-color);
+            margin: 0;
+            font-weight: 600;
         }
         .pre-recorder-grid {
             display: grid;
@@ -87,26 +97,27 @@
         input, select, textarea {
             width: 100%;
             padding: 12px;
-            border: 1px solid #cbd5e1;
+            border: 1px solid rgba(15, 23, 42, 0.22);
             border-radius: 8px;
             font-size: 16px;
             box-sizing: border-box;
-            background-color: rgba(255, 255, 255, 0.96);
+            background-color: rgba(255, 255, 255, 0.85);
             color: var(--text-color);
         }
         .criteria-box {
-            background: rgba(248, 250, 252, 0.95);
-            border: 1px solid #cbd5e1;
+            background: rgba(248, 250, 252, 0.82);
+            border: 1px solid rgba(15, 23, 42, 0.18);
             padding: 20px;
             border-radius: 12px;
             margin-top: 25px;
             margin-bottom: 25px;
+            color: var(--text-color);
         }
         .criteria-box h3 {
             margin-top: 0;
-            color: var(--primary-color);
+            color: var(--text-color);
             font-size: 18px;
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: 1px solid rgba(15, 23, 42, 0.15);
             padding-bottom: 10px;
         }
         .criteria-row {
@@ -120,41 +131,46 @@
             font-weight: normal;
             font-size: 14px;
             flex: 2;
+            color: var(--text-color);
         }
         .criteria-row select {
             flex: 1;
             padding: 8px;
         }
         .total-box {
-            background: rgba(241, 245, 249, 0.97);
+            background: rgba(241, 245, 249, 0.9);
             border: 2px solid #94a3b8;
             padding: 15px;
             border-radius: 8px;
             text-align: center;
             margin-top: 15px;
             font-weight: bold;
-            color: #475569;
+            color: var(--text-color);
             font-size: 18px;
             transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
         }
         .total-box.score-pass {
-            background: rgba(220, 252, 231, 0.98);
+            background: rgba(220, 252, 231, 0.95);
             border-color: #16a34a;
             color: #166534;
         }
         .total-box.score-fail {
-            background: rgba(254, 226, 226, 0.98);
+            background: rgba(254, 226, 226, 0.95);
             border-color: #dc2626;
             color: #991b1b;
         }
         .recorder-section {
-            background: rgba(248, 250, 252, 0.95);
-            border: 2px dashed #cbd5e1;
+            background: rgba(248, 250, 252, 0.82);
+            border: 2px dashed rgba(15, 23, 42, 0.25);
             padding: 20px;
             border-radius: 12px;
             margin-top: 25px;
             margin-bottom: 25px;
             text-align: center;
+            color: var(--text-color);
+        }
+        .recorder-section p {
+            color: var(--text-color);
         }
         .btn {
             background: var(--primary-color);
@@ -264,6 +280,8 @@
                         <option value="B2.2">B2.2</option>
                         <option value="C1.1">C1.1</option>
                         <option value="C1.2">C1.2</option>
+                        <option value="C2.1">C2.1</option>
+                        <option value="C2.2">C2.2</option>
                         <option value="Konv Nach A2">Konv Nach A2</option>
                         <option value="Konv Nach B1">Konv Nach B1</option>
                         <option value="Konv Nach B2">Konv Nach B2</option>
@@ -272,17 +290,18 @@
                         <option value="Beratung B1">Beratung B1</option>
                         <option value="Beratung B2">Beratung B2</option>
                         <option value="Beratung C1">Beratung C1</option>
+                        <option value="Beratung C2">Beratung C2</option>
                     </select>
                 </div>
             </div>
 
             <div class="recorder-section">
                 <label>Mündliche Prüfung (Audioaufnahme):</label>
-                <p style="font-size: 13px; color: #64748b; margin-top: 2px;">للامتحان أونلاين على الكمبيوتر: اختر "مشاركة الصوت (Share tab audio)". على الموبايل: يتم التسجيل عبر الميكروفون مباشرة.</p>
+                <p style="font-size: 13px; margin-top: 2px;">للامتحان أونلاين على الكمبيوتر: اختر "مشاركة الصوت (Share tab audio)". على الموبايل: يتم التسجيل عبر الميكروفون مباشرة.</p>
                 <button type="button" id="startBtn" class="btn">🎙️ Start</button>
                 <button type="button" id="pauseBtn" class="btn btn-warning" disabled>⏸️ Pause</button>
                 <button type="button" id="stopBtn" class="btn btn-danger" disabled>⏹️ Stopp & Fertig</button>
-                <p id="timer" style="margin-top: 10px; font-weight: bold; color: #64748b;">00:00</p>
+                <p id="timer" style="margin-top: 10px; font-weight: bold;">00:00</p>
                 <audio id="audioElement" controls></audio>
             </div>
 
@@ -421,6 +440,8 @@
                     <option value="B2.2">B2.2</option>
                     <option value="C1.1">C1.1</option>
                     <option value="C1.2">C1.2</option>
+                    <option value="C2.1">C2.1</option>
+                    <option value="C2.2">C2.2</option>
                     <option value="Konv Nach A2">Konv Nach A2</option>
                     <option value="Konv Nach B1">Konv Nach B1</option>
                     <option value="Konv Nach B2">Konv Nach B2</option>
@@ -429,6 +450,7 @@
                     <option value="Beratung B1">Beratung B1</option>
                     <option value="Beratung B2">Beratung B2</option>
                     <option value="Beratung C1">Beratung C1</option>
+                    <option value="Beratung C2">Beratung C2</option>
                 </select>
             </div>
 
