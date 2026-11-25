@@ -294,9 +294,9 @@
             <div class="recorder-section">
                 <label>Mündliche Prüfung (Audioaufnahme):</label>
                 <p style="font-size: 13px; margin-top: 2px;">للامتحان أونلاين على الكمبيوتر: اختر "مشاركة الصوت (Share tab audio)". على الموبايل: يتم التسجيل عبر الميكروفون مباشرة.</p>
-                <button type="button" id="startBtn" class="btn">🎙️ Start</button>
-                <button type="button" id="pauseBtn" class="btn btn-warning" disabled>⏸️ Pause</button>
-                <button type="button" id="stopBtn" class="btn btn-danger" disabled>⏹️ Stopp & Fertig</button>
+                <button type="button" id="startBtn" class="btn">⏺ Aufnahme starten</button>
+                <button type="button" id="pauseBtn" class="btn btn-warning" disabled>❚❚ Pause</button>
+                <button type="button" id="stopBtn" class="btn btn-danger" disabled>■ Aufnahme beenden</button>
                 <p id="timer" style="margin-top: 10px; font-weight: bold;">00:00</p>
                 <audio id="audioElement" controls></audio>
             </div>
@@ -603,7 +603,7 @@
                 pauseBtn.disabled = false;
                 stopBtn.disabled = false;
                 submitBtn.disabled = true;
-                pauseBtn.textContent = "⏸️ Pause";
+                pauseBtn.textContent = "❚❚ Pause";
                 
                 seconds = 0;
                 startTimer();
@@ -622,13 +622,13 @@
             if (mediaRecorder.state === "recording") {
                 mediaRecorder.pause();
                 stopTimer();
-                pauseBtn.textContent = "▶️ Fortsetzen";
+                pauseBtn.textContent = "▶ Aufnahme fortsetzen";
                 statusMessage.textContent = "Aufnahme pausiert.";
                 statusMessage.style.color = "#f59e0b";
             } else if (mediaRecorder.state === "paused") {
                 mediaRecorder.resume();
                 startTimer();
-                pauseBtn.textContent = "⏸️ Pause";
+                pauseBtn.textContent = "❚❚ Pause";
                 statusMessage.textContent = "Aufnahme läuft...";
                 statusMessage.style.color = "#ea580c";
             }
@@ -648,7 +648,7 @@
             startBtn.disabled = false;
             pauseBtn.disabled = true;
             stopBtn.disabled = true;
-            pauseBtn.textContent = "⏸️ Pause";
+            pauseBtn.textContent = "❚❚ Pause";
             statusMessage.textContent = "Wird verarbeitet...";
         });
 
