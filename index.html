@@ -453,7 +453,7 @@
             </div>
 
             <div style="margin-top: 30px; text-align: center;">
-                <button type="submit" id="submitBtn" class="btn btn-success" style="width: 100%; padding: 15px; font-size: 18px;" disabled>🎙️ برجاء إتمام التسجيل الصوتي أولاً للإرسال</button>
+                <button type="submit" id="submitBtn" class="btn btn-success" style="width: 100%; padding: 15px; font-size: 18px;" disabled>Bitte zuerst die Audioaufnahme beenden</button>
             </div>
             <p id="statusMessage"></p>
         </form>
@@ -729,7 +729,7 @@
                 calculateTotal();
                 base64Audio = "";
                 submitBtn.disabled = true;
-                submitBtn.textContent = "🎙️ برجاء إتمام التسجيل الصوتي أولاً للإرسال";
+                submitBtn.textContent = "Bitte zuerst die Audioaufnahme beenden";
             } catch (error) {
                 statusMessage.textContent = "Fehler beim Senden. Bitte versuchen Sie es erneut.";
                 statusMessage.style.color = "#ef4444";
