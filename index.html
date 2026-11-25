@@ -191,7 +191,11 @@
         .btn-success { background: #10b981; }
         .btn-success:hover { background: #059669; }
         .btn:disabled, .btn-success:disabled { background: #cbd5e1; cursor: not-allowed; }
-        #audioElement { display: none; }
+        #audioElement {
+            display: none;
+            width: 100%;
+            margin-top: 12px;
+        }
         #statusMessage {
             margin-top: 15px;
             font-weight: bold;
@@ -460,6 +464,14 @@
     </div>
 
     <script>
+        const DRAFT_STORAGE_KEY = "kapitel_eins_exam_draft_v1";
+        const draftFieldIds = [
+            "fullName", "idNumber", "examType", "examMode", "examAttempt",
+            "examDate", "instructor", "examLevel", "critE", "critWR",
+            "critA", "critF", "critK", "feedback", "statusResult",
+            "retakeRequired", "recommendedLevel", "notes"
+        ];
+
         const scoreSelects = document.querySelectorAll('.score-select');
         const totalScoreDisplay = document.getElementById('totalScore');
         const totalBox = document.getElementById('totalBox');
@@ -503,11 +515,56 @@
             select.addEventListener('change', calculateTotal);
         });
 
+        function saveDraftToStorage() {
+            try {
+                const draft = {};
+                draftFieldIds.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) draft[id] = el.value;
+                });
+                localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(draft));
+            } catch (e) {}
+        }
+
+        function restoreDraftFromStorage() {
+            try {
+                const raw = localStorage.getItem(DRAFT_STORAGE_KEY);
+                if (!raw) return;
+                const draft = JSON.parse(raw);
+                draftFieldIds.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el && typeof draft[id] === "string") {
+                        el.value = draft[id];
+                    }
+                });
+                toggleRecommendedLevel();
+                if (draft.recommendedLevel && examTypeSelect.value === "Einstufungstest") {
+                    recommendedLevelSelect.value = draft.recommendedLevel;
+                }
+                calculateTotal();
+            } catch (e) {}
+        }
+
+        function clearDraftFromStorage() {
+            try {
+                localStorage.removeItem(DRAFT_STORAGE_KEY);
+            } catch (e) {}
+        }
+
+        draftFieldIds.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.addEventListener('input', saveDraftToStorage);
+                el.addEventListener('change', saveDraftToStorage);
+            }
+        });
+
         let mediaRecorder;
         let audioChunks = [];
         let timerInterval = null;
         let seconds = 0;
         let base64Audio = "";
+        let audioPreviewUrl = "";
         let audioStream = null;
         let displayStream = null;
         let micStream = null;
@@ -517,8 +574,34 @@
         const stopBtn = document.getElementById('stopBtn');
         const submitBtn = document.getElementById('submitBtn');
         const timerDisplay = document.getElementById('timer');
+        const audioElement = document.getElementById('audioElement');
         const examForm = document.getElementById('examForm');
         const statusMessage = document.getElementById('statusMessage');
+
+        function resetAudioPreview() {
+            audioElement.pause();
+            audioElement.removeAttribute('src');
+            audioElement.style.display = 'none';
+            if (audioPreviewUrl) {
+                URL.revokeObjectURL(audioPreviewUrl);
+                audioPreviewUrl = "";
+            }
+        }
+
+        function hasUnsavedRecordingOrProgress() {
+            const isRecordingOrPaused = Boolean(
+                mediaRecorder && (mediaRecorder.state === "recording" || mediaRecorder.state === "paused")
+            );
+            const hasReadyAudio = Boolean(base64Audio && base64Audio.startsWith("data:audio"));
+            return isRecordingOrPaused || hasReadyAudio;
+        }
+
+        window.addEventListener('beforeunload', (e) => {
+            if (hasUnsavedRecordingOrProgress()) {
+                e.preventDefault();
+                e.returnValue = "";
+            }
+        });
 
         function startTimer() {
             if (timerInterval) clearInterval(timerInterval);
@@ -539,6 +622,8 @@
 
         startBtn.addEventListener('click', async () => {
             try {
+                resetAudioPreview();
+                base64Audio = "";
                 displayStream = null;
                 micStream = null;
 
@@ -587,6 +672,10 @@
 
                 mediaRecorder.onstop = () => {
                     const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    audioPreviewUrl = URL.createObjectURL(audioBlob);
+                    audioElement.src = audioPreviewUrl;
+                    audioElement.style.display = 'block';
+
                     const reader = new FileReader();
                     reader.readAsDataURL(audioBlob);
                     reader.onloadend = () => {
@@ -603,6 +692,7 @@
                 pauseBtn.disabled = false;
                 stopBtn.disabled = false;
                 submitBtn.disabled = true;
+                submitBtn.textContent = "Bitte zuerst die Audioaufnahme beenden";
                 pauseBtn.textContent = "❚❚ Pause";
                 
                 seconds = 0;
@@ -651,6 +741,8 @@
             pauseBtn.textContent = "❚❚ Pause";
             statusMessage.textContent = "Wird verarbeitet...";
         });
+
+        restoreDraftFromStorage();
 
         examForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -723,10 +815,12 @@
 
                 statusMessage.textContent = "Daten und Aufnahme erfolgreich gesendet! ✅";
                 statusMessage.style.color = "#10b981";
+                clearDraftFromStorage();
                 examForm.reset();
                 toggleRecommendedLevel();
                 timerDisplay.textContent = "00:00";
                 calculateTotal();
+                resetAudioPreview();
                 base64Audio = "";
                 submitBtn.disabled = true;
                 submitBtn.textContent = "Bitte zuerst die Audioaufnahme beenden";
